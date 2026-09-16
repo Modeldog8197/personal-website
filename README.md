@@ -1,16 +1,48 @@
-# React + Vite
+# Avdhoot Gupta — personal portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A React + Vite portfolio about simulation, data analysis, software, and basketball. The interface uses a restrained editorial layout, project-specific SVG illustrations, a working normal-distribution experiment, and an accessible, searchable project collection.
 
-Currently, two official plugins are available:
+## Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Use Node.js 22 or later.
 
-## React Compiler
+```sh
+npm ci
+npm run dev -- --host 127.0.0.1
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Checks
 
-## Expanding the Oxlint configuration
+```sh
+npm run lint
+npm run format:check
+npm test
+npm run build
+npx playwright install chromium
+npm run test:e2e
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+Browser checks cover desktop and mobile layout, sampling controls, project search, empty states, project notes, repository search, keyboard navigation, and reduced motion. CI runs the same checks. `npm run format` formats the source.
+
+## Editing content
+
+- `portfolio.js`: featured projects, descriptions, technical details, categories, and links.
+- `repositories.json`: explicit snapshot of all 39 public repositories returned for Modeldog8197 during this update; no runtime GitHub API dependency.
+- `About.jsx`: biography, basketball, and community work.
+- `Contact.jsx`: existing public email, GitHub, and LinkedIn addresses.
+- `index.css`: responsive layouts, design tokens, print layout, and reduced-motion support.
+- `sampling.js`: deterministic Box–Muller normal sampling used by the homepage experiment.
+
+The featured projects group related implementations; the repository archive retains earlier versions and exercises. Local projects without public sources are described without invented links. Data-Maximizer's previous public demo returned 404 during verification, so it has no active demo link.
+
+## Content provenance
+
+Project descriptions were checked against `simulation/sim.js` and `sim-worker.js`, `NBA-API/README.md`, `Biofuel-circle-monte-carlo/02_full_analysis.py`, `signal-bot/main.py`, and the Vivriti and Accounting repositories. The current simulation source contains **10 scenarios**, including product cost. Personal background and local project descriptions use the owner's previously supplied information.
+
+The basketball notes preserve the documented baseline comparison and do not claim predictive superiority. Vivriti is attributed as a team project with chatbot integration. Portfolio illustrations are labeled as illustrations and contain no business results or player statistics. The homepage histogram is computed from actual generated samples; its horizontal scale is −4σ to +4σ, with any outside samples excluded from the drawing but included in the sample mean.
+
+## Build and hosting
+
+`npm run build` produces `dist/`. Serve that directory from an existing static host. Relative Vite asset paths support both a domain root and a repository subdirectory. The HTML entry is `main.jsx` at the repository root; no nonexistent `src/` or `components/` directories are required.
+
+The only external visual dependency is Google Fonts (DM Sans and Manrope); local sans-serif fallbacks remain available when fonts cannot load. The portrait is imported and bundled locally. There is no analytics, contact-form backend, or secret required. Project dashboards may have their own backend availability requirements.

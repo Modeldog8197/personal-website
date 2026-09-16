@@ -1,0 +1,13 @@
+AVDHOOT PORTFOLIO REDESIGN
+
+The personal-website folder contains the complete updated source.
+Run npm ci, npm run dev -- --host 127.0.0.1.
+Run npm run build to create dist/ for hosting.
+
+To apply the changes to an existing clean clone at commit b57aa82, run:
+git apply --check ../portfolio-redesign.patch
+git apply ../portfolio-redesign.patch
+
+Verified: production build, lint, formatting, four logic tests.
+Desktop/mobile Playwright tests are included but could not run in the provided environment.
+GitHub rejected the write with Resource not accessible by integration; no remote changes, PR, merge, or deployment were made.

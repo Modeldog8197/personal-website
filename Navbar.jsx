@@ -1,64 +1,49 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-
+  const [active, setActive] = useState('')
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    if (!('IntersectionObserver' in window)) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id)
+        })
+      },
+      { rootMargin: '-15% 0px -60% 0px' },
+    )
+    document
+      .querySelectorAll('main > section[id]')
+      .forEach((section) => observer.observe(section))
+    return () => observer.disconnect()
   }, [])
-
-  const links = [
-    { label: 'about', href: '#about' },
-    { label: 'skills', href: '#skills' },
-    { label: 'projects', href: '#projects' },
-    { label: 'interests', href: '#hobbies' },
-    { label: 'contact', href: '#contact' },
-  ]
-
-  const handleLinkClick = () => setMobileOpen(false)
-
   return (
-    <>
-      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar">
-        <div className="container navbar__inner">
-          <a href="#" className="navbar__logo">avdhoot.</a>
-          <div className="navbar__links">
-            {links.map((link) => (
-              <a key={link.label} href={link.href} className="navbar__link">
-                {link.label}
-              </a>
-            ))}
-          </div>
-          <button
-            className="navbar__mobile-toggle"
-            onClick={() => setMobileOpen(true)}
-            aria-label="Open menu"
-          >
-            <span />
-            <span />
-            <span />
-          </button>
-        </div>
-      </nav>
-
-      <div className={`mobile-menu ${mobileOpen ? 'open' : ''}`}>
-        <button className="mobile-menu__close" onClick={() => setMobileOpen(false)}>
-          ✕
-        </button>
-        {links.map((link) => (
+    <header className="site-header">
+      <div className="container header-inner">
+        <a className="wordmark" href="#home" aria-label="Avdhoot Gupta, home">
+          ag<span>.</span>
+        </a>
+        <nav aria-label="Main navigation">
           <a
-            key={link.label}
-            href={link.href}
-            className="mobile-menu__link"
-            onClick={handleLinkClick}
+            href="#projects"
+            aria-current={active === 'projects' ? 'location' : undefined}
           >
-            {link.label}
+            Work
           </a>
-        ))}
+          <a
+            href="#about"
+            aria-current={active === 'about' ? 'location' : undefined}
+          >
+            About
+          </a>
+          <a
+            href="#contact"
+            aria-current={active === 'contact' ? 'location' : undefined}
+          >
+            Contact <span aria-hidden="true">↗</span>
+          </a>
+        </nav>
       </div>
-    </>
+    </header>
   )
 }

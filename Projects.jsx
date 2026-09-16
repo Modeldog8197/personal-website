@@ -1,107 +1,240 @@
-export default function Projects() {
-  const projects = [
-    {
-      title: 'Biofuel Circle Monte Carlo',
-      description:
-        'Built a Monte Carlo simulation in Python to model biofuel production cycles. Uses randomized sampling to predict yields and test circular economy scenarios — basically letting math do the guesswork.',
-      tags: ['Python', 'Monte Carlo', 'Research'],
-      github: 'https://github.com/Modeldog8197/Biofuel-circle-monte-carlo',
-      icon: '🔬',
-    },
-    {
-      title: 'Basketball Shot Predictor',
-      description:
-        'Because why not combine my two favorite things? This Python tool uses physics and stats to predict whether a basketball shot goes in based on trajectory data.',
-      tags: ['Python', 'ML', 'Physics'],
-      github: 'https://github.com/Modeldog8197/basketball-short-predictor',
-      icon: '🏀',
-    },
-    {
-      title: 'Monte Carlo Sim (JS)',
-      description:
-        'An interactive browser visualization that shows Monte Carlo methods in action. Watch dots converge into Pi approximations and probability distributions in real-time.',
-      tags: ['JavaScript', 'Math', 'Visualization'],
-      github: 'https://github.com/Modeldog8197/Monte-Carlo-sim',
-      icon: '🎲',
-    },
-    {
-      title: 'Signal Bot',
-      description:
-        'A web-based bot that picks up on signal patterns and reacts to them. Think of it as a lightweight automation tool with a clean frontend for monitoring.',
-      tags: ['HTML', 'JavaScript', 'Automation'],
-      github: 'https://github.com/Modeldog8197/signal-bot',
-      icon: '📡',
-    },
-    {
-      title: 'Physics Simulation Engine',
-      description:
-        'A JavaScript simulation engine that models real-world physics — collisions, gravity, particle systems. Built to visualize concepts I was learning and just see what happens when you crank the numbers up.',
-      tags: ['JavaScript', 'Physics', 'Canvas', 'Simulation'],
-      github: 'https://github.com/Modeldog8197/simulation',
-      icon: '⚙️',
-    },
-  ]
+import { useState } from 'react'
+import { categories, matchesProject, moreProjects, projects } from './portfolio'
+import repositories from './repositories.json'
+import ProjectArt from './ProjectArt'
 
+function ProjectLinks({ project }) {
   return (
-    <section className="section" id="projects">
+    <div className="project-links">
+      {project.live && (
+        <a
+          className="text-link"
+          href={project.live}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {project.liveLabel || 'Open project'}{' '}
+          <span aria-hidden="true">↗</span>
+          <span className="sr-only">: {project.title} (new tab)</span>
+        </a>
+      )}
+      {project.source && (
+        <a
+          className="source-link"
+          href={project.source}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Source code <span aria-hidden="true">↗</span>
+          <span className="sr-only">: {project.title} (new tab)</span>
+        </a>
+      )}
+    </div>
+  )
+}
+
+export default function Projects() {
+  const [category, setCategory] = useState('All')
+  const [query, setQuery] = useState('')
+  const [repoQuery, setRepoQuery] = useState('')
+  const featured = projects.filter((p) => matchesProject(p, category, query))
+  const additional = moreProjects.filter((p) =>
+    matchesProject(p, category, query),
+  )
+  const count = featured.length + additional.length
+  const archive = repositories
+    .filter((p) =>
+      p.name.toLowerCase().includes(repoQuery.trim().toLowerCase()),
+    )
+    .sort((a, b) => a.name.localeCompare(b.name))
+  return (
+    <section
+      className="work-section"
+      id="projects"
+      aria-labelledby="work-title"
+    >
       <div className="container">
-        <div className="section__header fade-in">
-          <span className="section__label">Projects</span>
-          <h2 className="section-title">Stuff I've built</h2>
-          <p className="section-subtitle">
-            A mix of research tools, simulations, and apps — basically whatever 
-            sounded cool at the time.
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">01 / The work</span>
+            <h2 id="work-title">
+              Built to figure
+              <br />
+              something out.
+            </h2>
+          </div>
+          <p>
+            Experiments, useful tools, and a few questions
+            <br className="desktop-break" /> that became much bigger projects.
           </p>
         </div>
-
-        <div className="projects__grid">
-          {projects.map((project, index) => (
-            <div
-              className="project-card fade-in"
-              key={project.title}
-              style={{ transitionDelay: `${index * 0.1}s` }}
+        <div className="work-tools">
+          <div
+            className="filters"
+            role="group"
+            aria-label="Filter projects by category"
+          >
+            {categories.map((c) => (
+              <button
+                key={c}
+                aria-pressed={category === c}
+                onClick={() => setCategory(c)}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+          <label className="search-label">
+            <span className="sr-only">Search projects</span>
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 20 20"
+              width="17"
+              height="17"
+              fill="none"
+              stroke="currentColor"
             >
-              <div className="project-card__header">
-                <span className="project-card__icon">{project.icon}</span>
-                <div className="project-card__links">
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="project-card__link"
-                    aria-label={`View ${project.title} on GitHub`}
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                  </a>
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="project-card__link"
-                    aria-label={`Open ${project.title}`}
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </a>
+              <circle cx="8" cy="8" r="5.5" />
+              <path d="m12 12 5 5" />
+            </svg>
+            <input
+              type="search"
+              placeholder="Find a project"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </label>
+        </div>
+        <p className="results-count" role="status">
+          {category === 'All' && !query
+            ? 'Selected projects & ongoing explorations'
+            : `${count} ${count === 1 ? 'project' : 'projects'} found`}
+        </p>
+        <div className="featured-projects">
+          {featured.map((project) => (
+            <article
+              className="featured-project"
+              key={project.id}
+              id={project.id}
+            >
+              <ProjectArt type={project.id} />
+              <div className="project-copy">
+                <div className="project-meta">
+                  <span>
+                    {project.number} / {project.category}
+                  </span>
                 </div>
+                <h3>{project.title}</h3>
+                <p className="project-subtitle">{project.subtitle}</p>
+                <p className="project-description">{project.description}</p>
+                <ul className="project-facts">
+                  {project.facts.map((f) => (
+                    <li key={f}>{f}</li>
+                  ))}
+                </ul>
+                <p className="tech-list">{project.tags.join(' / ')}</p>
+                <ProjectLinks project={project} />
               </div>
-
-              <h3 className="project-card__title">{project.title}</h3>
-              <p className="project-card__description">{project.description}</p>
-
-              <div className="project-card__tags">
-                {project.tags.map((tag) => (
-                  <span className="project-card__tag" key={tag}>{tag}</span>
-                ))}
-              </div>
-            </div>
+              <details className="project-details">
+                <summary>
+                  Project notes{' '}
+                  <span className="sr-only">for {project.title}</span>
+                  <span className="details-plus" aria-hidden="true">
+                    +
+                  </span>
+                </summary>
+                <div className="details-grid">
+                  {project.details.map(([heading, text]) => (
+                    <div key={heading}>
+                      <h4>{heading}</h4>
+                      <p>{text}</p>
+                    </div>
+                  ))}
+                </div>
+              </details>
+            </article>
           ))}
         </div>
+        {!!additional.length && (
+          <div className="more-work">
+            <h3 className="subsection-title">
+              More from the workbench{' '}
+              <span>{String(additional.length).padStart(2, '0')}</span>
+            </h3>
+            <div className="more-grid">
+              {additional.map((project) => (
+                <article className="small-project" key={project.title}>
+                  <span className="eyebrow">{project.category}</span>
+                  <h4>{project.title}</h4>
+                  <p>{project.description}</p>
+                  <p className="tech-list">{project.tags.join(' / ')}</p>
+                  <ProjectLinks project={project} />
+                  {project.note && (
+                    <p className="project-note">{project.note}</p>
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
+        {!count && (
+          <div className="empty-state">
+            <h3>No projects match that search.</h3>
+            <p>Try a subject like Python, basketball, or simulation.</p>
+            <button
+              className="text-link"
+              onClick={() => {
+                setQuery('')
+                setCategory('All')
+              }}
+            >
+              Clear filters <span aria-hidden="true">↗</span>
+            </button>
+          </div>
+        )}
+        <details className="repo-archive">
+          <summary>
+            <span>
+              Earlier builds & repository archive{' '}
+              <small>{repositories.length} repositories</small>
+            </span>
+            <span className="details-plus" aria-hidden="true">
+              +
+            </span>
+          </summary>
+          <div className="archive-inner">
+            <p>
+              The full trail: current projects, earlier versions, small tools,
+              and coding exercises.
+            </p>
+            <label className="archive-search">
+              Find a repository
+              <input
+                type="search"
+                value={repoQuery}
+                onChange={(e) => setRepoQuery(e.target.value)}
+                placeholder="Search repository names"
+              />
+            </label>
+            <p className="results-count" role="status">
+              {archive.length} repositories
+            </p>
+            <ul className="repo-list">
+              {archive.map((repo) => (
+                <li key={repo.name}>
+                  <a href={repo.url} target="_blank" rel="noopener noreferrer">
+                    {repo.name}
+                    <span aria-hidden="true">↗</span>
+                    <span className="sr-only"> (new tab)</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            {!archive.length && (
+              <p>No matching repositories. Try another name.</p>
+            )}
+          </div>
+        </details>
       </div>
     </section>
   )
