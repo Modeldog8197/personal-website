@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 test('portfolio loads without runtime errors or horizontal overflow', async ({
   page,
-}) => {
+}, testInfo) => {
   const errors = []
   page.on('pageerror', (e) => errors.push(e.message))
   await page.goto('/')
@@ -39,7 +39,7 @@ test('sampling controls update the actual histogram', async ({ page }) => {
   const initial = await chart.getAttribute('aria-label')
   await page.getByRole('button', { name: /Resample/ }).click()
   await expect(chart).not.toHaveAttribute('aria-label', initial)
-  await page.getByLabel('Samples', { exact: true }).selectOption('10000')
+  await page.getByRole('combobox', { name: /^Samples/ }).selectOption('10000')
   await expect(chart).toHaveAttribute('aria-label', /Histogram of 10000/)
 })
 
