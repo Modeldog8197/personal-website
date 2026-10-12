@@ -1,5 +1,7 @@
 # Avdhoot Gupta — personal portfolio
 
+Visit the website- https://modeldog8197.github.io/personal-website/
+
 A React + Vite portfolio about simulation, data analysis, software, and basketball. The interface uses a restrained editorial layout, project-specific SVG illustrations, a working normal-distribution experiment, and an accessible, searchable project collection.
 
 ## Development
